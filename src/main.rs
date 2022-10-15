@@ -36,18 +36,15 @@ fn generate_salt() -> [u8; 16] {
     return salt
 }
 
-fn login() -> bool {
-    let mut username = String::new();
-    let mut password = String::new();
-    println!("Please enter your username: ");
-    io::stdin().read_line(&mut username).expect("Failed to read line");
-    println!("Please enter your password: ");
-    io::stdin().read_line(&mut password).expect("Failed to read line");
-    username = username.trim().to_string();
-    password = password.trim().to_string();
-    let user = User::new(username, password);
-    let cost = DEFAULT_COST;
+fn login(username: &String, password: &String, user: &User) -> bool {
+    let salt = user.salt;
+    let password = hash_with_salt(password.as_bytes(), DEFAULT_COST, salt).unwrap().to_string();
 
+    if (username == &user.username) && (password == user.password) {
+        return true
+    }
+
+    return false;
 }
 
 #[test]
@@ -98,10 +95,17 @@ fn can_login_correctly() {
     let password = String::from("password");
     let user = User::new(username.clone(), password.clone());
 
-    let login_result = login(&user);
+    let login_result = login(&username, &password, &user);
     assert_eq!(login_result, true);
 }
 
+#[test]
 fn can_login_incorrectly() {
+    let username = String::from("test_user");
+    let password = String::from("password");
+    let incorrect_password = String::from("incorrect_password");
+    let user = User::new(username.clone(), password.clone());
 
+    let login_result = login(&username, &incorrect_password, &user);
+    assert_eq!(login_result, false);
 }
