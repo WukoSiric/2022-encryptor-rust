@@ -1,4 +1,3 @@
-use rand::Rng; //Choosing random word 
 // use std::collections::HashSet; 
 
 fn main() {

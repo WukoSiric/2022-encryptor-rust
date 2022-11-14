@@ -1,3 +1,4 @@
+use rand::Rng; //Choosing random word 
 fn generate_salt() -> [u8; 16] {
     let mut salt: [u8; 16] = [0; 16];
 
